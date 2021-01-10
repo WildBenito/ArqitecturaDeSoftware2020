@@ -1,0 +1,35 @@
+Go es un lenguaje de programacion que facilita la construccion de software robusto, simple y eficiente.
+
+-El compilador forza a seguir buenas practicas
+-El compilador es muy rapido
+-Soporta concurrencia
+
+Para instalar https://golang.org/doc/install?download=go1.15.6.linux-amd64.tar.gz#install
+
+Tambien se puede usar un compilador online https://play.golang.org/ que fue el usado para este tutorial.
+
+Dentro de cada programa para ejecutarse debe llevar un packaje nombre.
+
+Probemos un Hola mundo
+
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	fmt.Println("Hello, word")
+}
+
+Para ejecutars simplemente dentro de la carpeta ./nombre_archivo
+
+Observacion: Al inicializar variable, estas no tienen valor null, los int tienes valor cero, string tienen cadena vacia y booleanos comienzan en falso.
+
+go mod init <nombre>: Es como un archivo package-lock y crea un archivo go.mod que lista las dependencias necesarias para el modulo requerido.
+
+go build: Compila el programa y crea un ejecutable para poder usarlo de la forma ./nombre
+
+go test: Con _test.go utiliza los archivos crados para hacer pruebas.
+
+

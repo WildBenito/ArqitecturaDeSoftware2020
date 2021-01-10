@@ -1,0 +1,2 @@
+Por temas de tiempo y en vista que este es el utimo tutorial, no siento que poseo el conocimiento para hacer ejercicios y terminar el tutorial
+actualmente, pienso seguir investigando cuando posea un poco mas de tiempo libre.
