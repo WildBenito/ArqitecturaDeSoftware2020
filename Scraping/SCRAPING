@@ -1,0 +1,90 @@
+
+El siguiente tutorial se baso en el tutorial de youtube de Leonardo Kuffo
+
+Web scraping de pagina mercado libre
+
+Scraping: Extraer informacion de la pagina de manera automatica.
+
+Es claro que cuando se buscan datos los resultados son muchos, tantos que no se puede mostrar en una sola pagina.
+
+Podemos extraer informacion de pagina si es que no poseemos API.
+
+Ventajas: No limitaciones de informacion
+	  NO depende de una API.
+	
+Desventajas: Dependencia de la estructura de la pagina.
+
+
+scrapy.spiders.Spider -> para scrapear de una sola pagina web
+
+scrapy.spiders.CrawlSpider -> Para mas de una pagina web
+
+
+Para varias paginas webs debemos tener en cuenta el Crawling horizontal y vertical
+
+Del crawling vertical se sacan los datos de la pagina y del horizontal se buscan las paginas siguientes.
+
+	Observacion:
+	
+		-Hacer scraping no es anonimo, por las llamadas que se hacen.
+		-Tener en cuenta la legaidad de los datos antes de su publicaciòn
+
+Para instalar :    pip install scrapy
+
+Importaciones:
+
+import scrapy
+from scrapy.item import Field
+from scrapy.item import Item
+from scrapy.spiders import CrawlSpider, Rule
+from scrapy.selector import Selector
+from scrapy.loader.processors import MapCompose
+from scrapy.linkextractors import LinkExtractor
+from scrapy.loader import ItemLoader
+from bs4 import BeautifulSoup
+
+Necesitamos copiar el link de la pagina que desemos scrapear y posteriormente tenemos que analizarla con inspeccionar elemento buscando donde esta ubicado lo que nos interesa buscar.
+
+start_urls = ['https://listado.mercadolibre.cl/perros#D[A:perros]']
+
+allowed_domains restringe los dominios para facilitar la busqueda
+
+-Para lograr el scraping horizontal y vertical es necesario establecer reglas para poder moverse entre las paginas que deseamos buscar.(Debe de buscarse similitudes entre estas para poder agregarlas a las reglas)
+
+rules = (
+        Rule(  # REGLA #1 => HORIZONTALIDAD POR PAGINACION
+            LinkExtractor(
+                allow=r'/_Desde_\d+'
+            ), follow=True),
+ 
+        Rule(   # REGLA #2 => VERTICALIDAD AL DETALLE PRODUCTOS
+            LinkExtractor(
+                allow=r'/MLC-'
+            ), follow=True, callback='parse_items'),
+    )
+
+En la siguiente parte debemos buscar la locaizacion en el css de lo que deseamos mostrar, para que se llenen los campos definidos al inicio.
+
+class Artículo(Item):
+    título = Field()
+    precio = Field()
+    descripción = Field()
+
+
+    def parse_items(self, response):
+        item = ItemLoader(Artículo(), response)
+ 
+        item.add_xpath('título', '//h1/text()')
+        item.add_xpath('descripción', '//div[@class="item-description__text"]/p/text()')
+        item.add_xpath('precio', '//span[@class="price-tag-fraction"]/text()')
+ 
+        yield item.load_item()  
+
+yield item.load_item()  Esta funcione devuelve los Items y los muestra en la consola
+
+Finalmente para ejecutar:                                                      
+
+	scrapy runspider nombre_archivo.py -o Nombre_archivo_de_guardado.csv -t csv
+
+
+	Luego de -t es para eleguir el formato de guardado del archuvo de datos scrapeados.
